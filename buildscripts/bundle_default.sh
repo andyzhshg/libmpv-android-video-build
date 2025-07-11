@@ -37,9 +37,38 @@ cp app/build/outputs/apk/release/lib/x86_64/libmediakitandroidhelper.so         
 
 cd ../..
 
-zip -r default-arm64-v8a.jar                prefix/arm64-v8a/usr/local/lib/*.so
-zip -r default-armeabi-v7a.jar              prefix/armeabi-v7a/usr/local/lib/*.so
-zip -r default-x86.jar                      prefix/x86/usr/local/lib/*.so
-zip -r default-x86_64.jar                   prefix/x86_64/usr/local/lib/*.so
+mkdir -p temp/lib/arm64-v8a
+mkdir -p temp/lib/armeabi-v7a
+mkdir -p temp/lib/x86
+mkdir -p temp/lib/x86_64
+
+cp prefix/arm64-v8a/usr/local/lib/*.so temp/lib/arm64-v8a/
+cp prefix/armeabi-v7a/usr/local/lib/*.so temp/lib/armeabi-v7a/
+cp prefix/x86/usr/local/lib/*.so temp/lib/x86/
+cp prefix/x86_64/usr/local/lib/*.so temp/lib/x86_64/
+
+cd temp
+
+FIXED_TIME="2025-01-01 00:00:00"
+
+find "lib" -type d -exec touch -d "$FIXED_TIME" {} +
+find "lib/arm64-v8a" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+find "lib/armeabi-v7a" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+find "lib/x86" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+find "lib/x86_64" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+
+md5sum lib/arm64-v8a/*.so
+md5sum lib/armeabi-v7a/*.so
+md5sum lib/x86/*.so
+md5sum lib/x86_64/*.so
+
+find lib/arm64-v8a -type f | sort | zip -r -X ../default-arm64-v8a.jar -@
+find lib/armeabi-v7a -type f | sort | zip -r -X ../default-armeabi-v7a.jar -@
+find lib/x86 -type f | sort | zip -r -X ../default-x86.jar -@
+find lib/x86_64 -type f | sort | zip -r -X ../default-x86_64.jar -@
+
+cd ../
+
+pwd
 
 md5sum *.jar
