@@ -109,6 +109,7 @@ cpuflags=
 	--enable-protocol=tls \
 	--enable-protocol=srt \
 	--enable-protocol=udp \
+	--enable-protocol=videosafe \
 	\
 	--enable-encoder=mjpeg \
 	--enable-encoder=ljpeg \
